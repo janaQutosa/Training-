@@ -1,0 +1,67 @@
+module mailbox_example; 
+  mailbox my_mailbox ;
+  
+  typedef struct{
+    int val;
+    string str; 
+  }msg;
+ 
+
+  initial begin 
+
+    my_mailbox = new(); 
+
+  end 
+
+  
+
+ 
+
+  task task1; 
+
+    input int val; 
+
+    input string str; 
+    msg m;
+
+    begin 
+      m.val=val;
+      m.str=str;
+
+      $display("Task1: Before put - value: %0d, name: %s", val, str); 
+
+      my_mailbox.put(m);
+
+      $display("Task1: After put - value: %0d, name: %s", val, str); 
+
+    end 
+
+  endtask 
+
+  task task2; 
+  msg m;
+
+    begin 
+
+      $display("Task2: Before get"); 
+      
+      my_mailbox.get(m);
+
+      $display("Task2: After get - value: %0d, name: %s", m.val, m.str); 
+
+    end 
+
+  endtask 
+
+
+  initial begin 
+
+    fork   
+      task1(23,"marah");
+            task2();
+
+    join 
+
+  end 
+
+endmodule 

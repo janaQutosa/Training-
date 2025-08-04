@@ -1,0 +1,44 @@
+module semaphore_example;
+
+  logic [7:0] memory ;
+  semaphore sem_mem;
+
+
+task write_mem( logic [7:0] data);
+begin 
+  sem_mem.get(1);
+  $display ("writing data :%h to the memory at time %0t",data,$time);
+  #5;
+  memory=data;
+  $display ("Finished writing data :%h to the memory at time %0t",data,$time);
+  sem_mem.put(1);
+
+end 
+endtask
+  
+  
+  
+task read_mem ;
+begin 
+  sem_mem.get(1);
+   $display("Reading memory at time %0t", $time);
+            #5; 
+            $display("Read data: %h from memory at time %0t", memory, $time);
+  sem_mem.put(1);
+end 
+endtask
+
+
+initial begin 
+  sem_mem=new(1);
+  fork
+    write_mem(8'hBB);
+     read_mem ;
+  join
+  
+end 
+  
+  
+  
+endmodule 
+
